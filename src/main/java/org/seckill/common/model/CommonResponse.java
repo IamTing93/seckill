@@ -8,13 +8,13 @@ import org.seckill.common.exception.ExceptionCode;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonResponse {
+public class CommonResponse<T> {
 
     private String rstCode;
     private String rstMsg;
-    private Object rst;
+    private T rst;
 
-    public static CommonResponse success(Object rst) {
-        return new CommonResponse(ExceptionCode.EX_SUCCESS, "Success", rst);
+    public static <T> CommonResponse<T> success(T rst) {
+        return new CommonResponse<T>(ExceptionCode.EX_SUCCESS, "Success", rst);
     }
 }

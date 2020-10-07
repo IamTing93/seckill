@@ -12,11 +12,11 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(value = BaseException.class)
     @ResponseBody
-    public CommonResponse handleException(HttpServletResponse response, Exception ex) {
-        CommonResponse rst = null;
+    public CommonResponse<String> handleException(HttpServletResponse response, Exception ex) {
+        CommonResponse<String> rst = null;
         if (ex instanceof BaseException) {
             BaseException be = (BaseException) ex;
-            rst = new CommonResponse(be.getExceptionCode(), be.getMessage(), "");
+            rst = new CommonResponse<>(be.getExceptionCode(), be.getMessage(), "");
         }
         return rst;
     }
