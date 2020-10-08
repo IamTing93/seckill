@@ -1,7 +1,6 @@
 package org.seckill.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import org.seckill.dao.GoodsDAO;
 import org.seckill.dao.OrderInfoDAO;
 import org.seckill.model.OrderInfo;
@@ -11,10 +10,7 @@ import org.seckill.vo.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Wrapper;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service

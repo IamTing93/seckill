@@ -6,8 +6,10 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import org.seckill.vo.GoodsVO;
 import org.seckill.vo.OrderVO;
+import org.springframework.stereotype.Repository;
 
 @Mapper
+@Repository
 public interface GoodsDAO extends BaseMapper<GoodsVO>{
 
     @Update("update goods set goods_stock = goods_stock - #{orderVO.count} where id = #{orderVO.goodsId}")

@@ -46,6 +46,18 @@ public class Exceptions {
         }
     }
 
+    public static class AccountExist extends BaseException {
+        private static final String msg = "Account exists";
+
+        public AccountExist() {
+            this(msg);
+        }
+
+        public AccountExist(String msg) {
+            super(ExceptionCode.EX_ACCOUNT_EXIST, msg);
+        }
+    }
+
     public static class PasswordEmpty extends BaseException {
         private static final String msg = "Password is empty";
         public PasswordEmpty() {
@@ -67,4 +79,5 @@ public class Exceptions {
             super(ExceptionCode.EX_PASSWORD_ERROR, msg);
         }
     }
+
 }

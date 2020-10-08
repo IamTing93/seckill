@@ -2,7 +2,6 @@ package org.seckill.common.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -48,8 +47,7 @@ public class RedisService {
 
     public String toString(Object value) throws JsonProcessingException {
         Class<?> clazz = value.getClass();
-        if (clazz == int.class || clazz == Integer.class ||
-                clazz == long.class || clazz == Long.class) {
+        if (clazz == Integer.class || clazz == Long.class) {
             return "" + value;
         } else if (clazz == String.class) {
             return (String) value;
