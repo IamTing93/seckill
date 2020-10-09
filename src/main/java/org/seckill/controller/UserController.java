@@ -1,8 +1,11 @@
 package org.seckill.controller;
 
+import org.seckill.access.CurrentUser;
 import org.seckill.common.model.CommonResponse;
+import org.seckill.model.User;
 import org.seckill.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,5 +32,10 @@ public class UserController {
         Cookie cookie = userService.registerAndLogin(username, password);
         response.addCookie(cookie);
         return CommonResponse.success("");
+    }
+
+    @GetMapping
+    public CommonResponse<User> showUser(@CurrentUser User user) {
+        return CommonResponse.success(user);
     }
 }

@@ -26,9 +26,13 @@ public class GoodsService {
         return seckillGoodsDAO.listSeckillGoodsVO();
     }
 
-    public SeckillGoodsDetailVO getSeckillGoodsByGoodsId(int id) {
+    public SeckillGoodsVO getSeckillGoodsByGoodsId(int id) {
+        return seckillGoodsDAO.getSeckillGoodsByGoodsId(id);
+    }
 
-        SeckillGoodsVO goods = seckillGoodsDAO.getSeckillGoodsByGoodsId(id);
+    public SeckillGoodsDetailVO getSeckillGoodsDetailByGoodsId(int id) {
+
+        SeckillGoodsVO goods = getSeckillGoodsByGoodsId(id);
 
         // 0未开始，1进行中，2已结束
         int seckillStatus = 0;
