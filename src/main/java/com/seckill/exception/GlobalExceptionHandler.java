@@ -21,8 +21,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ServerResponse<CodeMsg> handleException(HttpServletRequest request, HttpServletResponse response, Exception e) {
 
-        log.info(e.getMessage());
-
         if (e instanceof GlobalException) {
             return ServerResponse.error(((GlobalException) e).getCodeMsg());
         }

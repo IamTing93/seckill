@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>登录页面</title>
+    <title>注册页面</title>
 
     <!-- jquery -->
     <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
@@ -22,7 +22,7 @@
 <body>
 <form name="loginForm" id="loginForm" method="post" style="width:50%; margin:0 auto">
 
-    <h2 style="text-align:center; margin-bottom: 20px">用户登录</h2>
+    <h2 style="text-align:center; margin-bottom: 20px">用户注册</h2>
 
     <div class="form-group">
         <div class="row">
@@ -50,13 +50,13 @@
             <button class="btn btn-primary btn-block" type="reset" onclick="reset()">重置</button>
         </div>
         <div class="col-md-5">
-            <button class="btn btn-primary btn-block" type="submit" onclick="login()">登录</button>
+            <button class="btn btn-primary btn-block" type="submit" onclick="register()">注册</button>
         </div>
     </div>
 </form>
 </body>
 <script>
-    function doLogin() {
+    function doRegister() {
         // 显示加载动画
         g_showLoading();
 
@@ -67,7 +67,7 @@
         var password = md5(str);
 
         $.ajax({
-            url: "/user/doLogin",
+            url: "/user/doRegister",
             type: "POST",
             data:{
                 mobile: $("#mobile").val(),
@@ -88,10 +88,10 @@
         });
     }
 
-    function login() {
+    function register() {
         $("#loginForm").validate({
             submitHandler:function(form){
-                doLogin();
+                doRegister();
             }
         });
     }

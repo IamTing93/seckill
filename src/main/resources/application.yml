@@ -4,10 +4,23 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhos:3306/seckill?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+    url: jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
     username: root
-    password: admin
+    password: root
 
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+
+com:
+  seckill:
+    fixed-salt: dsfh342dfas
+
+    cookie:
+      max-age: 86400
+      key-prefix: SECKILL_

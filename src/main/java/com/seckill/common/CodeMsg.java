@@ -24,8 +24,9 @@ public class CodeMsg {
     public static final CodeMsg MOBILE_EMPTY = new CodeMsg(500212,"手机号不能为空");
     public static final CodeMsg MOBILE_ERROR = new CodeMsg(500213, "手机号格式错误");
     public static final CodeMsg MOBILE_NOT_EXIST = new CodeMsg(500214, "手机号不存在");
-    public static final CodeMsg PASSWORD_ERROR = new CodeMsg(500215, "密码错误");
-    public static final CodeMsg REGISTER_BATCH = new CodeMsg(500216, "批量数量设置错误");
+    public static final CodeMsg MOBILE_EXISTS = new CodeMsg(500215, "手机号已存在");
+    public static final CodeMsg PASSWORD_ERROR = new CodeMsg(500216, "密码错误");
+    public static final CodeMsg REGISTER_BATCH = new CodeMsg(500217, "批量数量设置错误");
 
     /**
      * 商品模块5003XX

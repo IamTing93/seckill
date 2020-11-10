@@ -1,7 +1,7 @@
 package com.seckill.controller;
 
 import com.seckill.common.CodeMsg;
-import com.seckill.entity.vo.LoginVO;
+import com.seckill.entity.vo.LoginInfoVO;
 import com.seckill.entity.common.ServerResponse;
 import com.seckill.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +33,26 @@ public class UserController {
         return "login";
     }
 
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
     @PostMapping("/doLogin")
     @ResponseBody
-    public ServerResponse<CodeMsg> doLogin(HttpServletResponse response, @Validated LoginVO loginVO) {
-        log.info(loginVO.toString());
+    public ServerResponse<CodeMsg> doLogin(HttpServletResponse response, @Validated LoginInfoVO loginInfoVO) {
+        log.info("Login: " + loginInfoVO.toString());
 
-        userService.login(response, loginVO);
+        userService.login(response, loginInfoVO);
 
+        return ServerResponse.success(CodeMsg.SUCCESS);
+    }
+
+    @PostMapping("/doRegister")
+    @ResponseBody
+    public ServerResponse<CodeMsg> doRegister(HttpServletResponse response, @Validated LoginInfoVO loginInfoVO) {
+        log.info("Register: " + loginInfoVO.toString());
+        userService.registerAndLogin(response, loginInfoVO);
         return ServerResponse.success(CodeMsg.SUCCESS);
     }
 }

@@ -1,6 +1,6 @@
 package com.seckill.service;
 
-import com.seckill.entity.vo.LoginVO;
+import com.seckill.entity.vo.LoginInfoVO;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,5 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface UserService {
 
-    void login(HttpServletResponse response, LoginVO loginVO);
+    void registerAndLogin(HttpServletResponse response, LoginInfoVO loginInfo);
+    void login(HttpServletResponse response, LoginInfoVO loginInfo);
 }

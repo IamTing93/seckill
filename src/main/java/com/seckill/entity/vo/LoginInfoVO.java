@@ -11,14 +11,14 @@ import org.springframework.lang.NonNull;
 
 @Data
 @AllArgsConstructor
-public class LoginVO {
+public class LoginInfoVO {
     @NonNull
-    private String id;
+    private String mobile;
     @NonNull
     private String password;
 
     @Override
     public String toString() {
-        return "LoginVO{" + id  + ", " + password + "}";
+        return "LoginVO{" + mobile + ", " + password + "}";
     }
 }
