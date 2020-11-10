@@ -1,54 +1,13 @@
-create database if not exists `seckill`;
+use seckill;
 
-use `seckill`;
-
-drop table if exists `goods`;
-create table `goods` (
-	`id` int(11) unsigned primary key auto_increment,
-    `goods_name` varchar(128) default null,
-    `goods_title` varchar(128) default null,
-    `goods_img` varchar(256) default null,
-    `goods_detail` longtext,
-    `goods_price` decimal(10, 2),
-    `goods_stock` int(11) default 0
-);
-
-drop table if exists `order_info`;
-create table `order_info` (
-	`id` int(11) unsigned primary key auto_increment,
-    `user_id` int(11) unsigned not null,
-    `goods_id` int(11) unsigned not null,
-    `goods_name` varchar(128),
-    `goods_count` int(11),
-    `goods_price` decimal(10,2),
-    `status` tinyint,
-    `create_date` datetime,
-    `pay_date` datetime
-);
-
-drop table if exists `seckill_goods`;
-create table `seckill_goods` (
-	`id` int(11) unsigned primary key auto_increment,
-    `goods_id` int(11) unsigned not null,
-    `seckill_price` decimal(10, 2),
-    `seckill_stock` int(11),
-    `start_time` datetime,
-    `end_time` datetime
-);
-
-drop table if exists `seckill_order`;
-create table `seckill_order` (
-	`id` int(11) unsigned primary key auto_increment,
-    `user_id` int(11) unsigned not null,
-    `goods_id` int(11) unsigned not null,
-    `order_id` int(11) unsigned not null
-);
-
-drop table if exists `user`;
-create table `user` (
-	`id` int(11) unsigned primary key auto_increment,
-    `name` varchar(64) default null,
-    `password` varchar(128) default null,
-    `salt` varchar(32) default null,
-    `head_url` varchar(256) default null
-);
+DROP TABLE IF EXISTS seckill_user;
+CREATE TABLE seckill_user (
+    id BIGINT(20) NOT NULL PRIMARY KEY COMMENT "用户ID，手机号码",
+    nickname VARCHAR(255) NOT NULL COMMENT "昵称",
+    password VARCHAR(32) DEFAULT NULL COMMENT "MD5(MD5(pass明文, 固定SALT), 随机SALT)",
+    salt VARCHAR(10) DEFAULT NULL,
+    head VARCHAR(128) DEFAULT NULL COMMENT "头像，云存储ID",
+    register_date datetime DEFAULT NULL COMMENT "注册时间",
+    last_login_date datetime DEFAULT NULL COMMENT "上一次登录时间",
+    login_count int(11) DEFAULT '0' COMMENT "登录次数"
+) ENGINE INNODB;
