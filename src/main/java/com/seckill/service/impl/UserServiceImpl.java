@@ -1,5 +1,6 @@
 package com.seckill.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.seckill.common.CodeMsg;
 import com.seckill.entity.CurrentUserHolder;
 import com.seckill.entity.dto.UserDTO;
@@ -12,7 +13,7 @@ import com.seckill.utils.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
@@ -33,17 +34,20 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Value("${com.seckill.cookie.key-prefix}")
-    private String COOKIE_KEY_PREFIX;
+    @Value("${com.seckill.cookie.key-name}")
+    private String COOKIE_KEY_NAME;
+
+    @Value("${com.seckill.cookie.prefix}")
+    private String COOKIE_PREFIX;
 
     @Value("${com.seckill.cookie.max-age}")
-    private int MAX_AGE;
+    private int COOKIE_MAX_AGE;
 
     @Autowired
     private UserMapper userMapper;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void registerAndLogin(HttpServletResponse response, LoginInfoVO loginInfo) {
@@ -89,31 +93,60 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(encryptedPsw) || !user.getPassword().equals(encryptedPsw)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
+        // 更新最后登录时间和登录次数
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("+8"));
+        int loginCount = user.getLoginCount() + 1;
+        userMapper.update(null, new UpdateWrapper<UserDTO>().lambda()
+                .set(UserDTO::getLastLoginDate, now)
+                .set(UserDTO::getLoginCount, loginCount)
+                .eq(UserDTO::getId, user.getId()));
 
+        user.setLastLoginDate(now);
+        user.setLoginCount(loginCount);
         addCookie(response, user);
         CurrentUserHolder.set(user);
     }
 
     private void addCookie(HttpServletResponse response, UserDTO user) {
         String token = createToken();
-        String key = COOKIE_KEY_PREFIX + user.getId();
-        Cookie cookie = new Cookie(key, token);
-        cookie.setMaxAge(MAX_AGE);
+        Cookie cookie = new Cookie(COOKIE_KEY_NAME, token);
+        cookie.setPath("/");
+        cookie.setMaxAge(COOKIE_MAX_AGE);
         response.addCookie(cookie);
 
         // 更新redis缓存
-        updateRedisCache(key, token);
+        updateRedisCache(token, user);
     }
 
-    private void updateRedisCache(String key, String value) {
+    public String getTokenFromCookies(Cookie[] cookies) {
+        for (Cookie cookie: cookies) {
+            if (cookie.getName().equals(COOKIE_KEY_NAME)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    public UserDTO getUserFromToken(String token) {
+        UserDTO user = (UserDTO) redisTemplate.opsForValue().get(token);
+        CurrentUserHolder.set(user);
+        return user;
+    }
+
+    @Override
+    public UserDTO getUserFromCookies(Cookie[] cookies) {
+        return getUserFromToken(getTokenFromCookies(cookies));
+    }
+
+    private void updateRedisCache(String key, UserDTO value) {
         // 先删除之前的记录
         redisTemplate.delete(key);
-        ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        ops.set(key, value, MAX_AGE, TimeUnit.SECONDS);
+        ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+        ops.set(key, value, COOKIE_MAX_AGE, TimeUnit.SECONDS);
     }
 
     private String createToken() {
-        return UUID.randomUUID().toString();
+        return COOKIE_PREFIX + UUID.randomUUID().toString();
     }
 
 }

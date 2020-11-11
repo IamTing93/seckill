@@ -20,11 +20,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ServerResponse<CodeMsg> handleException(HttpServletRequest request, HttpServletResponse response, Exception e) {
+        e.printStackTrace();
 
         if (e instanceof GlobalException) {
             return ServerResponse.error(((GlobalException) e).getCodeMsg());
         }
 
-        return ServerResponse.error(CodeMsg.SERVER_ERROR);
+        return ServerResponse.error(CodeMsg.SERVER_ERROR.addMsg(e.getMessage()));
     }
 }

@@ -23,4 +23,5 @@ com:
 
     cookie:
       max-age: 86400
-      key-prefix: SECKILL_
+      prefix: SECKILL_
+      key-name: SECKILL_TOKEN

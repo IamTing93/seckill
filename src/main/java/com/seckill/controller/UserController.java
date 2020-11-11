@@ -1,10 +1,15 @@
 package com.seckill.controller;
 
+import com.seckill.annotation.Authenticated;
+import com.seckill.annotation.CurrentUser;
 import com.seckill.common.CodeMsg;
-import com.seckill.entity.vo.LoginInfoVO;
 import com.seckill.entity.common.ServerResponse;
+import com.seckill.entity.dto.UserDTO;
+import com.seckill.entity.vo.LoginInfoVO;
+import com.seckill.entity.vo.UserVO;
 import com.seckill.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -45,7 +50,7 @@ public class UserController {
 
         userService.login(response, loginInfoVO);
 
-        return ServerResponse.success(CodeMsg.SUCCESS);
+        return ServerResponse.success(null);
     }
 
     @PostMapping("/doRegister")
@@ -53,6 +58,15 @@ public class UserController {
     public ServerResponse<CodeMsg> doRegister(HttpServletResponse response, @Validated LoginInfoVO loginInfoVO) {
         log.info("Register: " + loginInfoVO.toString());
         userService.registerAndLogin(response, loginInfoVO);
-        return ServerResponse.success(CodeMsg.SUCCESS);
+        return ServerResponse.success(null);
+    }
+
+    @GetMapping("/currentUser")
+    @ResponseBody
+    @Authenticated
+    public ServerResponse<UserVO> getCurrentUser(@CurrentUser UserDTO user) {
+        UserVO vo = new UserVO();
+        BeanUtils.copyProperties(user, vo);
+        return ServerResponse.success(vo);
     }
 }
