@@ -28,7 +28,10 @@ public class AccessInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         Cookie[] cookies = request.getCookies();
-        UserDTO user = userService.getUserFromCookies(cookies);
+        UserDTO user = null;
+        if (Objects.nonNull(cookies)) {
+            user = userService.getUserFromCookies(cookies);
+        }
         if (handler instanceof HandlerMethod) {
             HandlerMethod hm = (HandlerMethod) handler;
             if (hm.hasMethodAnnotation(Authenticated.class) &&
