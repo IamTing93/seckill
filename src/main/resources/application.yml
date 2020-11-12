@@ -17,6 +17,9 @@ spring:
     port: 6379
     database: 0
 
+mybatis:
+  config-location: classpath:mapper/*Mapper.xml
+
 com:
   seckill:
     fixed-salt: dsfh342dfas

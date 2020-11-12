@@ -1,7 +1,7 @@
 package com.seckill.service.impl;
 
-import com.seckill.entity.dto.GoodsDTO;
-import com.seckill.mapper.GoodsMapper;
+import com.seckill.entity.dto.SeckillGoodsDTO;
+import com.seckill.mapper.SeckillGoodsMapper;
 import com.seckill.service.GoodsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,15 @@ import java.util.List;
 public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
-    private GoodsMapper goodsMapper;
+    private SeckillGoodsMapper seckillGoodsMapper;
 
     @Override
-    public List<GoodsDTO> listGoods() {
-        return goodsMapper.selectList(null);
+    public List<SeckillGoodsDTO> listSeckillGoods() {
+        return seckillGoodsMapper.listSeckillGoods();
+    }
+
+    @Override
+    public SeckillGoodsDTO seckillGoodsDetail(long id) {
+        return seckillGoodsMapper.seckillGoodsDetail(id);
     }
 }

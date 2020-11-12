@@ -1,12 +1,12 @@
 package com.seckill.service;
 
-import com.seckill.entity.dto.GoodsDTO;
+import com.seckill.entity.dto.SeckillGoodsDTO;
 
 import java.util.List;
 
 public interface GoodsService {
 
-    List<GoodsDTO> listGoods();
+    List<SeckillGoodsDTO> listSeckillGoods();
 
-    GoodsDTO goodsDetail(long id);
+    SeckillGoodsDTO seckillGoodsDetail(long id);
 }

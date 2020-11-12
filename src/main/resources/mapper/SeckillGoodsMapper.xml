@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.mapper.SeckillGoodsMapper">
+
+    <select id="listSeckillGoods" resultType="com.seckill.entity.dto.SeckillGoodsDTO">
+        SELECT
+            a.*,
+            b.goods_name,
+            b.goods_title,
+            b.goods_img,
+            b.goods_title,
+            b.goods_price
+        FROM
+            seckill_goods AS a LEFT JOIN goods AS b ON a.goods_id = b.id
+    </select>
+
+    <select id="seckillGoodsDetail" resultType="com.seckill.entity.dto.SeckillGoodsDTO">
+        SELECT
+            a.*,
+            b.goods_name,
+            b.goods_title,
+            b.goods_img,
+            b.goods_title,
+            b.goods_price
+        FROM
+            seckill_goods AS a LEFT JOIN goods AS b ON a.goods_id = b.id
+        WHERE
+            a.seckill_id = #{id}
+    </select>
+</mapper>

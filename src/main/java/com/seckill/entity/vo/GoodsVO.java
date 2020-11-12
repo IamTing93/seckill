@@ -14,6 +14,6 @@ public class GoodsVO {
     private String goodsTitle;
     private String goodsImg;
     private String goodsDetail;
-    private String goodsPrice;
-    private String goodsStock;
+    private double goodsPrice;
+    private int goodsStock;
 }
