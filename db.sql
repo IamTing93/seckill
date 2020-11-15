@@ -33,6 +33,29 @@ CREATE TABLE seckill_goods (
     end_date DATETIME DEFAULT NULL COMMENT "秒杀结束时间"
 ) ENGINE=INNODB AUTO_INCREMENT=3;
 
+DROP TABLE IF EXISTS order_info;
+CREATE TABLE order_info (
+    id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "订单id",
+    user_id BIGINT(20) DEFAULT NULL COMMENT "用户id",
+    goods_id BIGINT(20) DEFAULT NULL COMMENT "商品id",
+    goods_name VARCHAR(16) DEFAULT NULL COMMENT "反范式冗余的商品名称",
+    goods_count INT(11) DEFAULT '0' COMMENT "商品数量",
+    goods_price DECIMAL(10, 2) DEFAULT '0.00' COMMENT "商品单价",
+    delivery_addr_id BIGINT(20) DEFAULT NULL COMMENT "收货地址id",
+    order_channel TINYINT(4) DEFAULT '0' COMMENT "1-pc，2-android，3-ios",
+    status TINYINT(4) DEFAULT '0' COMMENT "订单状态 0-新建未支付，1-已支付，2-已发货，3-已收货，4-已退款，5-已完成",
+    create_date DATETIME DEFAULT NULL COMMENT "创建订单时间",
+    pay_date DATETIME DEFAULT NULL COMMENT "支付时间"
+) ENGINE=INNODB;
+
+DROP TABLE IF EXISTS seckill_order;
+CREATE TABLE seckill_order (
+    seckill_id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "秒杀订单id",
+    seckill_user_id BIGINT(20) DEFAULT NULL COMMENT "用户id",
+    seckill_order_id BIGINT(20) DEFAULT NULL COMMENT "订单id",
+    seckill_goods_id BIGINT(20) DEFAULT NULL COMMENT "商品id"
+) ENGINE=INNODB;
+
 INSERT INTO goods VALUES (1, "iPhoneX", "Apple iPhone X (A1865) 64GB 深空灰色 移动联通电信4G手机", "/img/iphonex.png", "Apple iPhone X (A1865) 64GB 深空灰色 移动联通电信4G手机【五月特惠】大屏性价比iPhone7Plus4199元，iPhone8低至3499元，iPhoneXR低至4799元！更多特价、优惠券，点此查看！选移动，享大流量，不换号购机！", 5999, 100);
 INSERT INTO goods VALUES (2, "华为 P30", "华为 HUAWEI P30 Pro 超感光徕卡四摄10倍混合变焦麒麟980芯片屏内指纹", "/img/p30.png", "华为 HUAWEI P30 Pro 超感光徕卡四摄10倍混合变焦麒麟980芯片屏内指纹 8GB+256GB极光色全网通版双4G手机！", 5988, 55);
 

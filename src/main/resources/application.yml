@@ -28,3 +28,7 @@ com:
       max-age: 86400
       prefix: SECKILL_
       key-name: SECKILL_TOKEN
+
+    redis-lock:
+      key-prefix: redis_lock_
+      expire: 3600

@@ -1,17 +1,40 @@
 package com.seckill.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.seckill.entity.SeckillStatus;
 import com.seckill.entity.dto.SeckillGoodsDTO;
+import com.seckill.entity.dto.SeckillOrderDTO;
+import com.seckill.entity.dto.UserDTO;
+import com.seckill.mapper.SeckillOrderMapper;
 import com.seckill.service.SeckillService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * The type Seckill service.
+ */
 @Slf4j
 @Service
 public class SeckillServiceImpl implements SeckillService {
+
+    @Value("${com.seckill.redis-lock.expire}")
+    private int REDIS_LOCK_EXPIRE;
+
+    @Value("${com.seckill.redis-lock.key-prefix}")
+    private static String REDIS_LOCK_PREFIX;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private SeckillOrderMapper seckillOrderMapper;
 
     @Override
     public SeckillStatus getSeckillGoodsStatus(SeckillGoodsDTO dto) {
@@ -30,5 +53,44 @@ public class SeckillServiceImpl implements SeckillService {
             status.setRemainingSec(-1L);
         }
         return status;
+    }
+
+    @Override
+    public boolean doSeckill(UserDTO user, long goodsId) {
+        boolean rst;
+        rst = doSeckill_redisLock(user, goodsId);
+        return rst;
+    }
+
+
+    /**
+     * 加redis分布式锁
+     *
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    private boolean doSeckill_redisLock(UserDTO user, long goodsId) {
+        String lockKey = REDIS_LOCK_PREFIX + user.getId() + "_" + goodsId;
+        try {
+            // 先上锁
+            if (redisTemplate.opsForValue().setIfAbsent(lockKey, "1", REDIS_LOCK_EXPIRE, TimeUnit.SECONDS) == Boolean.TRUE) {
+                // 先查看是否已经秒杀过
+                int isSeckilled = seckillOrderMapper.selectCount(new QueryWrapper<SeckillOrderDTO>().lambda()
+                .eq(SeckillOrderDTO::getSeckillUserId, user.getId())
+                .eq(SeckillOrderDTO::getSeckillGoodsId, goodsId));
+                if (isSeckilled == 0) {
+                    // 插入订单
+
+                    // 减库存
+                }
+            }
+        } finally {
+            // 这里会有一个问题，若果加完锁后
+            // 由于某些原因，有可能导致A线程加的锁被B线程给删掉了
+            if (redisTemplate.hasKey(lockKey) == Boolean.TRUE) {
+                redisTemplate.delete(lockKey);
+            }
+        }
     }
 }

@@ -135,7 +135,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserFromCookies(Cookie[] cookies) {
-        return getUserFromToken(getTokenFromCookies(cookies));
+        String token = getTokenFromCookies(cookies);
+        if (Objects.nonNull(token)) {
+            return getUserFromToken(token);
+        }
+        return null;
     }
 
     private void updateRedisCache(String key, UserDTO value) {
