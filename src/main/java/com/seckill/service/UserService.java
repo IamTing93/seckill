@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface UserService {
 
-    void registerAndLogin(HttpServletResponse response, LoginInfoVO loginInfo);
+    String registerAndLogin(HttpServletResponse response, LoginInfoVO loginInfo);
 
-    void batchRegisterForTest(int num);
+    void batchRegisterForTest(LoginInfoVO loginInfo);
 
-    void login(HttpServletResponse response, LoginInfoVO loginInfo);
+    String login(HttpServletResponse response, LoginInfoVO loginInfo);
 
     UserDTO getUserFromCookies(Cookie[] cookies);
 }

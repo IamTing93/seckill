@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public void registerAndLogin(HttpServletResponse response, LoginInfoVO loginInfo) {
+    public String registerAndLogin(HttpServletResponse response, LoginInfoVO loginInfo) {
         if (Objects.isNull(loginInfo)) {
             throw new GlobalException(CodeMsg.BIND_ERROR);
         }
@@ -75,31 +75,29 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userMapper.insert(user);
-        login(response, loginInfo);
+        return login(response, loginInfo);
     }
 
     @Override
-    public void batchRegisterForTest(int num) {
-        for (long i = 1; i < num; i++) {
-            String salt = RandomUtil.RandomString(5);
-            LocalDateTime now = LocalDateTime.now(ZoneId.of("+8"));
+    public void batchRegisterForTest(LoginInfoVO loginInfo) {
+        String salt = RandomUtil.RandomString(5);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("+8"));
 
-            UserDTO user = UserDTO.builder()
-                    .id(i)
-                    .nickname("user_" + RandomUtil.randomNumberString(10))
-                    .password(MD5Util.getInstance().encrypt(String.valueOf(i), salt))
-                    .salt(salt)
-                    .registerDate(now)
-                    .lastLoginDate(now)
-                    .loginCount(0)
-                    .head(null)
-                    .build();
-            userMapper.insert(user);
-        }
+        UserDTO user = UserDTO.builder()
+                .id(Long.parseLong(loginInfo.getMobile()))
+                .nickname("user_" + RandomUtil.randomNumberString(10))
+                .password(MD5Util.getInstance().encrypt(loginInfo.getPassword(), salt))
+                .salt(salt)
+                .registerDate(now)
+                .lastLoginDate(now)
+                .loginCount(0)
+                .head(null)
+                .build();
+        userMapper.insert(user);
     }
 
     @Override
-    public void login(HttpServletResponse response, LoginInfoVO loginInfo) {
+    public String login(HttpServletResponse response, LoginInfoVO loginInfo) {
         if (Objects.isNull(loginInfo)) {
             throw new GlobalException(CodeMsg.BIND_ERROR);
         }
@@ -123,11 +121,12 @@ public class UserServiceImpl implements UserService {
 
         user.setLastLoginDate(now);
         user.setLoginCount(loginCount);
-        addCookie(response, user);
+        String token = addCookie(response, user);
         CurrentUserHolder.set(user);
+        return token;
     }
 
-    private void addCookie(HttpServletResponse response, UserDTO user) {
+    private String addCookie(HttpServletResponse response, UserDTO user) {
         String token = createToken();
         Cookie cookie = new Cookie(COOKIE_KEY_NAME, token);
         cookie.setPath("/");
@@ -136,10 +135,11 @@ public class UserServiceImpl implements UserService {
 
         // 更新redis缓存
         updateRedisCache(token, user);
+        return token;
     }
 
     public String getTokenFromCookies(Cookie[] cookies) {
-        for (Cookie cookie: cookies) {
+        for (Cookie cookie : cookies) {
             if (cookie.getName().equals(COOKIE_KEY_NAME)) {
                 return cookie.getValue();
             }

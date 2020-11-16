@@ -8,9 +8,12 @@ import com.seckill.entity.dto.UserDTO;
 import com.seckill.entity.vo.LoginInfoVO;
 import com.seckill.entity.vo.UserVO;
 import com.seckill.service.UserService;
+import com.seckill.utils.FileUtil;
+import com.seckill.utils.MD5Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +33,17 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/user")
 public class UserController {
 
+    @Value("${com.seckill.cookie.key-name}")
+    private String COOKIE_FIXED_SALT;
+
+    @Value("${com.seckill.performance.cookie-output-path}")
+    private String COOKIE_OUTPUT_PATH;
+
     @Autowired
     private UserService userService;
+
+    public UserController() {
+    }
 
     @GetMapping("/login")
     public String login() {
@@ -73,7 +85,31 @@ public class UserController {
     @PostMapping("batchRegisterForTest")
     @ResponseBody
     public ServerResponse<CodeMsg> batchRegisterForTest(int num) {
-        userService.batchRegisterForTest(num);
+        for (int i = 1; i <= num; i++) {
+            LoginInfoVO vo = new LoginInfoVO(String.valueOf(i), String.valueOf(i));
+            vo.setPassword(MD5Util.getInstance().encrypt(vo.getPassword(), COOKIE_FIXED_SALT));
+            userService.batchRegisterForTest(vo);
+        }
+        return ServerResponse.success(null);
+    }
+
+    @PostMapping("/doLoginForPerformance")
+    @ResponseBody
+    public ServerResponse<CodeMsg> doLoginForPerformance(HttpServletResponse response, @Validated LoginInfoVO loginInfoVO) {
+        log.info("LoginForPerformance: " + loginInfoVO.toString());
+        loginInfoVO.setPassword(MD5Util.getInstance().encrypt(loginInfoVO.getPassword(), COOKIE_FIXED_SALT));
+        String token = userService.login(response, loginInfoVO);
+        FileUtil.outputToFile(COOKIE_OUTPUT_PATH, token);
+        return ServerResponse.success(null);
+    }
+
+    @PostMapping("/doRegisterForPerformance")
+    @ResponseBody
+    public ServerResponse<CodeMsg> doRegisterForPerformance(HttpServletResponse response, @Validated LoginInfoVO loginInfoVO) {
+        log.info("RegisterForPerformance: " + loginInfoVO.toString());
+        loginInfoVO.setPassword(MD5Util.getInstance().encrypt(loginInfoVO.getPassword(), COOKIE_FIXED_SALT));
+        String token = userService.registerAndLogin(response, loginInfoVO);
+        FileUtil.outputToFile(COOKIE_OUTPUT_PATH, token);
         return ServerResponse.success(null);
     }
 }

@@ -32,3 +32,6 @@ com:
     redis-lock:
       key-prefix: redis_lock_
       expire: 3600
+
+    performance:
+      cookie-output-path: performance_test/cookies.csv

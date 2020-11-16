@@ -53,3 +53,5 @@ s101plugin.state
 
 !.idea/checkstyle-idea.xml
 !.idea/externalDependencies.xml
+
+performance_test/cookies.csv
