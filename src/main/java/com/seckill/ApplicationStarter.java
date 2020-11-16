@@ -1,11 +1,9 @@
 package com.seckill;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author boting.guo
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @SpringBootApplication
+@EnableTransactionManagement
 public class ApplicationStarter {
 
     public static void main(String[] args) {

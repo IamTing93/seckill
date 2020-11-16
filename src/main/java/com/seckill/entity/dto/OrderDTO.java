@@ -1,5 +1,6 @@
 package com.seckill.entity.dto;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -16,14 +17,14 @@ import java.time.LocalDateTime;
 @TableName("order_info")
 public class OrderDTO {
 
-    @TableId
-    private Long id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
     private Long userId;
-    private Long goodsId;
+    private Integer goodsId;
     private String goodsName;
     private Integer goodsCount;
     private Double goodsPrice;
-    private Long deliveryAddId;
+    private Long deliveryAddrId;
     private Integer orderChannel;
     private Integer status;
     private LocalDateTime createDate;

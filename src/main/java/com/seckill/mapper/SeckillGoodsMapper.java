@@ -15,4 +15,6 @@ public interface SeckillGoodsMapper extends BaseMapper<SeckillGoodsDTO> {
     List<SeckillGoodsDTO> listSeckillGoods();
 
     SeckillGoodsDTO seckillGoodsDetail(@Param("id") long id);
+
+    boolean decreaseSeckillGoods(long id, int num);
 }

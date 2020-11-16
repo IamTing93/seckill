@@ -1,17 +1,19 @@
 package com.seckill.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.seckill.common.CodeMsg;
 import com.seckill.entity.SeckillStatus;
 import com.seckill.entity.dto.SeckillGoodsDTO;
-import com.seckill.entity.dto.SeckillOrderDTO;
 import com.seckill.entity.dto.UserDTO;
-import com.seckill.mapper.SeckillOrderMapper;
+import com.seckill.exception.GlobalException;
+import com.seckill.service.GoodsService;
+import com.seckill.service.OrderService;
 import com.seckill.service.SeckillService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -34,7 +36,10 @@ public class SeckillServiceImpl implements SeckillService {
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private SeckillOrderMapper seckillOrderMapper;
+    private OrderService orderService;
+
+    @Autowired
+    private GoodsService goodsService;
 
     @Override
     public SeckillStatus getSeckillGoodsStatus(SeckillGoodsDTO dto) {
@@ -55,8 +60,9 @@ public class SeckillServiceImpl implements SeckillService {
         return status;
     }
 
+    @Transactional
     @Override
-    public boolean doSeckill(UserDTO user, long goodsId) {
+    public boolean doSeckill(UserDTO user, int goodsId) {
         boolean rst;
         rst = doSeckill_redisLock(user, goodsId);
         return rst;
@@ -70,21 +76,27 @@ public class SeckillServiceImpl implements SeckillService {
      * @param goodsId
      * @return
      */
-    private boolean doSeckill_redisLock(UserDTO user, long goodsId) {
+    private boolean doSeckill_redisLock(UserDTO user, int goodsId) {
         String lockKey = REDIS_LOCK_PREFIX + user.getId() + "_" + goodsId;
         try {
             // 先上锁
             if (redisTemplate.opsForValue().setIfAbsent(lockKey, "1", REDIS_LOCK_EXPIRE, TimeUnit.SECONDS) == Boolean.TRUE) {
                 // 先查看是否已经秒杀过
-                int isSeckilled = seckillOrderMapper.selectCount(new QueryWrapper<SeckillOrderDTO>().lambda()
-                .eq(SeckillOrderDTO::getSeckillUserId, user.getId())
-                .eq(SeckillOrderDTO::getSeckillGoodsId, goodsId));
-                if (isSeckilled == 0) {
+                boolean isSeckilled = orderService.isSeckillOrderExisted(user, goodsId);
+                if (!isSeckilled) {
                     // 插入订单
+                    if (!orderService.createSeckillOrder(user, goodsId)) {
+                        throw new GlobalException(CodeMsg.ORDER_CREATE_FAIL);
+                    }
 
                     // 减库存
+                    if (!goodsService.decreaseSeckillGoods(goodsId, 1)) {
+                        throw new GlobalException(CodeMsg.PRODUCT_DECREASE_FAIL);
+                    }
                 }
+                return true;
             }
+            return false;
         } finally {
             // 这里会有一个问题，若果加完锁后
             // 由于某些原因，有可能导致A线程加的锁被B线程给删掉了

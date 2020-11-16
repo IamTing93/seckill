@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SeckillGoodsVO extends GoodsVO {
 
-    private Long seckillId;
-    private Long goodsId;
+    private Integer seckillId;
+    private Integer goodsId;
     private double seckillPrice;
     private int stockCount;
     private LocalDateTime startDate;

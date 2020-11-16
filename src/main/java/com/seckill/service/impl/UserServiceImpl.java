@@ -79,6 +79,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void batchRegisterForTest(int num) {
+        for (long i = 1; i < num; i++) {
+            String salt = RandomUtil.RandomString(5);
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("+8"));
+
+            UserDTO user = UserDTO.builder()
+                    .id(i)
+                    .nickname("user_" + RandomUtil.randomNumberString(10))
+                    .password(MD5Util.getInstance().encrypt(String.valueOf(i), salt))
+                    .salt(salt)
+                    .registerDate(now)
+                    .lastLoginDate(now)
+                    .loginCount(0)
+                    .head(null)
+                    .build();
+            userMapper.insert(user);
+        }
+    }
+
+    @Override
     public void login(HttpServletResponse response, LoginInfoVO loginInfo) {
         if (Objects.isNull(loginInfo)) {
             throw new GlobalException(CodeMsg.BIND_ERROR);

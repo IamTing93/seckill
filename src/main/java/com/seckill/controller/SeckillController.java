@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
 @Controller
@@ -20,8 +21,9 @@ public class SeckillController {
     private SeckillService seckillService;
 
     @PostMapping("doSeckill")
+    @ResponseBody
     @Authenticated
-    public ServerResponse<String> doSeckill(@CurrentUser UserDTO user, Long goodsId) {
+    public ServerResponse<String> doSeckill(@CurrentUser UserDTO user, int goodsId) {
         seckillService.doSeckill(user, goodsId);
 
         return ServerResponse.success("Successful");

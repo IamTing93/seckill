@@ -4,6 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.seckill.mapper.SeckillGoodsMapper">
 
+    <update id="decreaseSeckillGoods">
+        UPDATE seckill_goods
+        SET
+            stock_count = stock_count - #{num}
+        WHERE
+            seckill_id = #{id} AND stock_count - #{num} > 0
+    </update>
+
     <select id="listSeckillGoods" resultType="com.seckill.entity.dto.SeckillGoodsDTO">
         SELECT
             a.*,

@@ -69,4 +69,11 @@ public class UserController {
         BeanUtils.copyProperties(user, vo);
         return ServerResponse.success(vo);
     }
+
+    @PostMapping("batchRegisterForTest")
+    @ResponseBody
+    public ServerResponse<CodeMsg> batchRegisterForTest(int num) {
+        userService.batchRegisterForTest(num);
+        return ServerResponse.success(null);
+    }
 }

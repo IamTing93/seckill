@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class GoodsDTO {
 
     @TableId
-    private Long id;
+    private Integer id;
     private String goodsName;
     private String goodsTitle;
     private String goodsImg;

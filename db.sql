@@ -2,7 +2,7 @@ use seckill;
 
 DROP TABLE IF EXISTS seckill_user;
 CREATE TABLE seckill_user (
-    id BIGINT(20) NOT NULL PRIMARY KEY COMMENT "用户ID，手机号码",
+    id BIGINT(20) PRIMARY KEY COMMENT "用户ID，手机号码",
     nickname VARCHAR(255) NOT NULL COMMENT "昵称",
     password VARCHAR(32) DEFAULT NULL COMMENT "MD5(MD5(pass明文, 固定SALT), 随机SALT)",
     salt VARCHAR(10) DEFAULT NULL,
@@ -14,28 +14,28 @@ CREATE TABLE seckill_user (
 
 DROP TABLE IF EXISTS goods;
 CREATE TABLE goods (
-    id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "商品id",
+    id int AUTO_INCREMENT PRIMARY KEY COMMENT "商品id",
     goods_name VARCHAR(16) DEFAULT NULL COMMENT "商品名称",
     goods_title VARCHAR(64) DEFAULT NULL COMMENT "商品标题",
     goods_img VARCHAR(256) DEFAULT NULL COMMENT "商品图片",
     goods_detail LONGTEXT COMMENT "商品详情",
     goods_price DECIMAL(10, 2) DEFAULT '0.00' COMMENT "商品单价",
     goods_stock INT(11) DEFAULT 0 COMMENT "-1表示没有限制"
-) ENGINE=INNODB AUTO_INCREMENT=3;
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS seckill_goods;
 CREATE TABLE seckill_goods (
-    seckill_id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "秒杀商品id",
+    seckill_id int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "秒杀商品id",
     goods_id BIGINT(20) DEFAULT NULL COMMENT "商品id",
     seckill_price DECIMAL(10, 2) DEFAULT '0.00' COMMENT "商品秒杀单价",
     stock_count INT(11) DEFAULT NULL COMMENT "库存数量",
     start_date DATETIME DEFAULT NULL COMMENT "秒杀开始时间",
     end_date DATETIME DEFAULT NULL COMMENT "秒杀结束时间"
-) ENGINE=INNODB AUTO_INCREMENT=3;
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS order_info;
 CREATE TABLE order_info (
-    id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "订单id",
+    id int AUTO_INCREMENT PRIMARY KEY COMMENT "订单id",
     user_id BIGINT(20) DEFAULT NULL COMMENT "用户id",
     goods_id BIGINT(20) DEFAULT NULL COMMENT "商品id",
     goods_name VARCHAR(16) DEFAULT NULL COMMENT "反范式冗余的商品名称",
@@ -50,7 +50,7 @@ CREATE TABLE order_info (
 
 DROP TABLE IF EXISTS seckill_order;
 CREATE TABLE seckill_order (
-    seckill_id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "秒杀订单id",
+    seckill_id int AUTO_INCREMENT PRIMARY KEY COMMENT "秒杀订单id",
     seckill_user_id BIGINT(20) DEFAULT NULL COMMENT "用户id",
     seckill_order_id BIGINT(20) DEFAULT NULL COMMENT "订单id",
     seckill_goods_id BIGINT(20) DEFAULT NULL COMMENT "商品id"

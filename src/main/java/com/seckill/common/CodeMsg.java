@@ -32,11 +32,13 @@ public class CodeMsg {
      * 商品模块5003XX
      */
     public static final CodeMsg PRODUCT_ERROR = new CodeMsg(500301, "服务端异常");
+    public static final CodeMsg PRODUCT_DECREASE_FAIL = new CodeMsg(500302, "库存减扣失败");
 
     /**
      * 订单模块5004XX
      */
     public static final CodeMsg ORDER_ERROR = new CodeMsg(500401, "服务端异常");
+    public static final CodeMsg ORDER_CREATE_FAIL = new CodeMsg(500402, "订单创建失败");
 
     /**
      * 秒杀模块5005XX

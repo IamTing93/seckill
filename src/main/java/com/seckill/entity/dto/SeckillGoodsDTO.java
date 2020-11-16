@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 public class SeckillGoodsDTO extends GoodsDTO {
 
-    private Long seckillId;
-    private Long goodsId;
+    private Integer seckillId;
+    private Integer goodsId;
     private double seckillPrice;
     private int stockCount;
     private LocalDateTime startDate;

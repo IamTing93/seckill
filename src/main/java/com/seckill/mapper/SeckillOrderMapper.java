@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface SeckillOrderMapper extends BaseMapper<SeckillOrderDTO> {
 
     SeckillOrderDTO getSeckillOrder(@Param("id") Long seckillOrderId);
+
+    boolean insertSeckillOrder(@Param("order") SeckillOrderDTO order);
 }

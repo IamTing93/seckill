@@ -7,5 +7,5 @@ import com.seckill.entity.dto.UserDTO;
 public interface SeckillService {
 
     SeckillStatus getSeckillGoodsStatus(SeckillGoodsDTO dto);
-    boolean doSeckill(UserDTO user, long goodsId);
+    boolean doSeckill(UserDTO user, int goodsId);
 }

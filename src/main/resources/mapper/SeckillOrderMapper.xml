@@ -3,6 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.seckill.mapper.SeckillOrderMapper">
+    <insert id="insertSeckillOrder">
+        INSERT INTO seckill_order(seckill_user_id, seckill_order_id, seckill_goods_id)
+        VALUE(#{order.seckillUserId}, #{order.seckillOrderId}, #{order.seckillGoodsId})
+    </insert>
 
 
     <select id="getSeckillOrder" resultType="com.seckill.entity.dto.SeckillOrderDTO">
@@ -10,4 +14,5 @@
         seckill_order AS a LEFT JOIN order_info AS b ON a.seckill_order_id = b.id
         WHERE a.seckill_id = #{id}
     </select>
+
 </mapper>
