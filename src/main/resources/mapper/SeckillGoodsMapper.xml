@@ -9,7 +9,7 @@
         SET
             stock_count = stock_count - #{num}
         WHERE
-            seckill_id = #{id} AND stock_count - #{num} > 0
+            seckill_id = #{id} AND stock_count - #{num} >= 0
     </update>
 
     <select id="listSeckillGoods" resultType="com.seckill.entity.dto.SeckillGoodsDTO">

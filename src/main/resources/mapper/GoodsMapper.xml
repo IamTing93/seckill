@@ -9,6 +9,6 @@
         SET
             goods_stock = goods_stock - #{num}
         WHERE
-            id = #{id} AND goods_stock - #{num} > 0
+            id = #{id} AND goods_stock - #{num} >= 0
     </update>
 </mapper>

@@ -131,7 +131,9 @@ public class UserServiceImpl implements UserService {
         Cookie cookie = new Cookie(COOKIE_KEY_NAME, token);
         cookie.setPath("/");
         cookie.setMaxAge(COOKIE_MAX_AGE);
-        response.addCookie(cookie);
+        if (Objects.nonNull(response)) {
+            response.addCookie(cookie);
+        }
 
         // 更新redis缓存
         updateRedisCache(token, user);

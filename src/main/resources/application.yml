@@ -34,4 +34,5 @@ com:
       expire: 3600
 
     performance:
-      cookie-output-path: performance_test/cookies.csv
+      cookie-output-path: performance_test/data/cookies.csv
+      user-output-path: performance_test/data/user.csv

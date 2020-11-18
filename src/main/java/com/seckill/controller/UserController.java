@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author boting.guo
@@ -38,6 +39,9 @@ public class UserController {
 
     @Value("${com.seckill.performance.cookie-output-path}")
     private String COOKIE_OUTPUT_PATH;
+
+    @Value("${com.seckill.performance.user-output-path}")
+    private String USER_OUTPUT_PATH;
 
     @Autowired
     private UserService userService;
@@ -84,7 +88,7 @@ public class UserController {
 
     @PostMapping("batchRegisterForTest")
     @ResponseBody
-    public ServerResponse<CodeMsg> batchRegisterForTest(int num) {
+    public ServerResponse<CodeMsg> batchRegisterForTest(int num) throws IOException {
         for (int i = 1; i <= num; i++) {
             LoginInfoVO vo = new LoginInfoVO(String.valueOf(i), String.valueOf(i));
             vo.setPassword(MD5Util.getInstance().encrypt(vo.getPassword(), COOKIE_FIXED_SALT));
@@ -99,7 +103,7 @@ public class UserController {
         log.info("LoginForPerformance: " + loginInfoVO.toString());
         loginInfoVO.setPassword(MD5Util.getInstance().encrypt(loginInfoVO.getPassword(), COOKIE_FIXED_SALT));
         String token = userService.login(response, loginInfoVO);
-        FileUtil.outputToFile(COOKIE_OUTPUT_PATH, token);
+        FileUtil.outputToFile(COOKIE_OUTPUT_PATH, token + "\n", true);
         return ServerResponse.success(null);
     }
 
@@ -109,7 +113,7 @@ public class UserController {
         log.info("RegisterForPerformance: " + loginInfoVO.toString());
         loginInfoVO.setPassword(MD5Util.getInstance().encrypt(loginInfoVO.getPassword(), COOKIE_FIXED_SALT));
         String token = userService.registerAndLogin(response, loginInfoVO);
-        FileUtil.outputToFile(COOKIE_OUTPUT_PATH, token);
+        FileUtil.outputToFile(COOKIE_OUTPUT_PATH, token + "\n", true);
         return ServerResponse.success(null);
     }
 }

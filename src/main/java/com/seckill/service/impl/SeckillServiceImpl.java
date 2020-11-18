@@ -85,13 +85,21 @@ public class SeckillServiceImpl implements SeckillService {
                 boolean isSeckilled = orderService.isSeckillOrderExisted(user, goodsId);
                 if (!isSeckilled) {
                     // 插入订单
+                    log.info("user: " + user.getId() + " try to seckill");
                     if (!orderService.createSeckillOrder(user, goodsId)) {
                         throw new GlobalException(CodeMsg.ORDER_CREATE_FAIL);
                     }
 
+                    // 这里利用数据库+事务来规避了订单创建过多的问题
+                    // 实际上会有很多线程都会访问到这个语句
+                    // 库存数量有可能小于请求数量，导致减扣失败
+                    // 因为事务的缘故，会进行回滚
+
                     // 减库存
                     if (!goodsService.decreaseSeckillGoods(goodsId, 1)) {
                         throw new GlobalException(CodeMsg.PRODUCT_DECREASE_FAIL);
+                    } else {
+                        log.info("user: " + user.getId() + " successes to seckill");
                     }
                 }
                 return true;
